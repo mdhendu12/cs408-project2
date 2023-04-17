@@ -1,5 +1,7 @@
 package edu.jsu.mcis.cs408.crosswordmagic.model;
 
+import android.util.Log;
+
 import java.util.HashMap;
 import java.util.HashSet;
 
@@ -91,7 +93,7 @@ public class Puzzle {
 
         /* add word to grid (for development only!) */
 
-        addWordToGrid(key);
+        //addWordToGrid(key);
 
     }
 
@@ -106,38 +108,56 @@ public class Puzzle {
 
         /* get word(s) from collection (will return null for non-existent words!) */
 
-        /*
+        // my code
 
-
-        INSERT YOUR CODE HERE
-
-
-         */
+        Word aWord = getWord(acrossKey);
+        Word dWord = getWord(downKey);
 
         /* compare guess to word(s); if it matches, and if it has not already been solved, assign word to "result" and call "addWordToGrid()" */
 
-        /*
+        // my code
 
+        try {
+            if (guess.equals(aWord.getWord()) && !guessed.contains(acrossKey) && aWord != null) {
+                result = getWord(acrossKey);
+                addWordToGrid(acrossKey);
+            }
+        }
+        catch (Exception e) {}
 
-        INSERT YOUR CODE HERE
+        try {
+            if (guess.equals(dWord.getWord()) && !guessed.contains(downKey) & dWord != null) {
+                result = getWord(downKey);
+                addWordToGrid(downKey);
+            }
+        }
+        catch (Exception e) { }
 
-
-         */
 
         /* check if any blank cells remain in "letters"; if not, the puzzle is solved, so set "solved" to true */
 
-        /*
+        // my code
 
-
-        INSERT YOUR CODE HERE
-
-
-         */
+        checkSolved();
 
         /* return reference to guessed word (so it can be added to the database) */
 
         return result;
 
+    }
+
+    private void checkSolved() {
+
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < width; j++) {
+                if (letters[i][j].equals(BLANK_CHAR)) {
+                    solved = false;
+                    return;
+                }
+            }
+        }
+
+        solved = true;
     }
 
     public void addWordToGrid(String key) {
@@ -148,15 +168,28 @@ public class Puzzle {
 
         guessed.add(key);
 
-        /* get word properties and add letters to "leters" array */
+        /* get word properties and add letters to "letters" array */
 
-        /*
+        // my code
 
+        int row = w.getRow();
+        int column = w.getColumn();
+        int length = w.getWord().length();
+        WordDirection direction = w.getDirection();
 
-        INSERT YOUR CODE HERE
+        for (int i = 0; i < length; i++) {
 
+            Character letter = w.getWord().charAt(i);
 
-         */
+            if (direction.ordinal() == 0) {
+                letters[row][column + i] = letter;
+            }
+            else {
+                letters[row + i][column] = letter;
+            }
+
+        }
+
 
     }
 

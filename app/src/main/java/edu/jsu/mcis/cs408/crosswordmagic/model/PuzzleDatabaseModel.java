@@ -107,6 +107,7 @@ public class PuzzleDatabaseModel extends SQLiteOpenHelper {
 
                         // my code
 
+                        params.put("puzzleid", String.valueOf(puzzleid));
                         params.put(context.getString(R.string.sql_field_row), fields[0]);
                         params.put(context.getString(R.string.sql_field_column), fields[1]);
                         params.put(context.getString(R.string.sql_field_box), fields[2]);
@@ -181,6 +182,21 @@ public class PuzzleDatabaseModel extends SQLiteOpenHelper {
 
     }
 
+    public int addGuess(Integer pid, Integer wid) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        String puzzleid = context.getString(R.string.sql_field_puzzleid);
+        String wordid = context.getString(R.string.sql_field_wordid);
+
+        values.put(puzzleid, pid);
+        values.put(wordid, wid);
+
+        int key = (int) db.insert(context.getString(R.string.sql_table_guesses), null, values);
+
+        return key;
+    }
+
     public Puzzle getPuzzle(int id) {
 
         Puzzle puzzle = null;
@@ -235,12 +251,54 @@ public class PuzzleDatabaseModel extends SQLiteOpenHelper {
                     Word w = new Word(params);
 
                     puzzle.addWord(w);
+
+                    cursor.moveToNext();
                 }
                 while (!cursor.isAfterLast());
 
                 cursor.close();
 
             }
+
+            query = context.getString(R.string.sql_get_guesses);
+            cursor = db.rawQuery(query, new String[]{String.valueOf(id)});
+
+            if (cursor.moveToFirst()) {
+                cursor.moveToFirst();
+
+                do {
+                    String num = cursor.getString(0);
+                    int direction = cursor.getInt(1);
+
+                    String acrossKey = num + WordDirection.ACROSS.toString();
+                    String downKey = num + WordDirection.DOWN.toString();
+
+                    /*
+
+
+                     */
+
+                    try {
+                        if (direction == 0) {
+                            puzzle.addWordToGrid(acrossKey);
+                        }
+                    }
+                    catch (Exception e) {}
+
+                    try {
+                        if (direction == 1) {
+                            puzzle.addWordToGrid(downKey);
+                        }
+                    }
+                    catch (Exception e) {}
+
+                    cursor.moveToNext();
+                }
+                while (!cursor.isAfterLast());
+
+                cursor.close();
+            }
+
 
         }
 
