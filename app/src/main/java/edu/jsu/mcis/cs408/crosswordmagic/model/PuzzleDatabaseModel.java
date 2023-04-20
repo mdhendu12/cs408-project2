@@ -107,7 +107,7 @@ public class PuzzleDatabaseModel extends SQLiteOpenHelper {
 
                         // my code
 
-                        params.put("puzzleid", String.valueOf(puzzleid));
+                        params.put(context.getString(R.string.sql_field_puzzleid), String.valueOf(puzzleid));
                         params.put(context.getString(R.string.sql_field_row), fields[0]);
                         params.put(context.getString(R.string.sql_field_column), fields[1]);
                         params.put(context.getString(R.string.sql_field_box), fields[2]);
@@ -272,11 +272,6 @@ public class PuzzleDatabaseModel extends SQLiteOpenHelper {
 
                     String acrossKey = num + WordDirection.ACROSS.toString();
                     String downKey = num + WordDirection.DOWN.toString();
-
-                    /*
-
-
-                     */
 
                     try {
                         if (direction == 0) {
